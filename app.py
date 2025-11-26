@@ -21,6 +21,11 @@ from storage import (
 )
 from config import TARGET_SITES, MIN_MATCH_SCORE
 
+# Load API key from Streamlit secrets (if available) and set as environment variable
+# This allows the scorer.py to access it via os.environ
+if "ANTHROPIC_API_KEY" in st.secrets:
+    os.environ["ANTHROPIC_API_KEY"] = st.secrets["ANTHROPIC_API_KEY"]
+
 # Page config
 st.set_page_config(
     page_title="Job Hunter 🎯",
@@ -454,10 +459,18 @@ elif page == "⚙️ Actions":
         unscored = get_unscored_jobs()
         st.info(f"**{len(unscored)}** jobs waiting to be scored")
         
-        # Check for API key
-        api_key_set = os.environ.get('ANTHROPIC_API_KEY') or os.path.exists('.env')
+        # Check for API key (supports .env, environment variable, or Streamlit secrets)
+        api_key_set = (
+            os.environ.get('ANTHROPIC_API_KEY') or 
+            "ANTHROPIC_API_KEY" in st.secrets or
+            os.path.exists('.env')
+        )
+        api_key_valid = os.environ.get('ANTHROPIC_API_KEY', '').startswith('sk-')
+        
         if not api_key_set:
-            st.warning("⚠️ Set your ANTHROPIC_API_KEY in the .env file first!")
+            st.warning("⚠️ Set your ANTHROPIC_API_KEY in `.streamlit/secrets.toml` or `.env` file!")
+        elif not api_key_valid:
+            st.warning("⚠️ Your API key appears to be a placeholder. Add your real key to `.streamlit/secrets.toml`")
         
         if st.button("🎯 Start Scoring", type="primary", key="score", disabled=len(unscored) == 0):
             with st.spinner(f"Scoring {len(unscored)} jobs... This may take a while."):

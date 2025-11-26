@@ -24,6 +24,7 @@ build/
 # Environment variables
 .env
 .env.local
+.streamlit/secrets.toml
 
 # OS
 .DS_Store
