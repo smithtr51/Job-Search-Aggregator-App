@@ -503,3 +503,4 @@ elif page == "⚙️ Actions":
 st.sidebar.markdown("---")
 st.sidebar.caption("Job Hunter v1.0 • Built with Streamlit")
 
+
