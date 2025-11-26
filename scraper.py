@@ -20,8 +20,40 @@ try:
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False
 
-from config import TARGET_SITES, REQUEST_DELAY, DEFAULT_SEARCH_TERMS
+from config import TARGET_SITES, REQUEST_DELAY, DEFAULT_SEARCH_TERMS, TARGET_LOCATIONS
 from storage import Job
+
+
+def is_location_match(job_location: str) -> bool:
+    """Check if a job location matches our target DC Metro Area or Remote locations."""
+    if not job_location:
+        return True  # Include jobs without location info (will be filtered by scoring)
+    
+    location_lower = job_location.lower()
+    
+    # Check for remote keywords
+    remote_keywords = ['remote', 'telework', 'work from home', 'wfh', 'anywhere']
+    if any(keyword in location_lower for keyword in remote_keywords):
+        return True
+    
+    # Check for DC Metro Area locations
+    dc_metro_keywords = [
+        # DC
+        'washington', 'dc', 'd.c.',
+        # Virginia
+        'virginia', ' va', ',va', 'arlington', 'alexandria', 'fairfax',
+        'reston', 'mclean', 'tysons', 'chantilly', 'herndon', 'vienna',
+        'sterling', 'manassas', 'falls church',
+        # Maryland
+        'maryland', ' md', ',md', 'bethesda', 'rockville', 'silver spring',
+        'gaithersburg', 'germantown', 'college park', 'bowie', 'greenbelt',
+        'largo', 'fort washington', 'suitland', 'annapolis', 'fort meade',
+        'glen burnie', 'severn', 'columbia', 'ellicott city', 'laurel',
+    ]
+    if any(keyword in location_lower for keyword in dc_metro_keywords):
+        return True
+    
+    return False
 
 
 class JobScraper:
@@ -344,26 +376,58 @@ class PlaywrightScraper:
                 # Wait for job listings to load
                 page.wait_for_timeout(5000)  # Give JS time to render
                 
-                # Try to fill in search if there's a search box
+                # Try to fill in keyword search if there's a search box
                 if search_params.get('keywords'):
-                    search_selectors = [
+                    keyword_selectors = [
                         'input[type="search"]',
                         'input[placeholder*="search" i]',
                         'input[placeholder*="keyword" i]',
                         'input[name*="search" i]',
+                        'input[name*="keyword" i]',
                         'input[id*="search" i]',
+                        'input[id*="keyword" i]',
                         '#keywordInput',
                     ]
-                    for selector in search_selectors:
+                    for selector in keyword_selectors:
                         try:
                             search_input = page.locator(selector).first
                             if search_input.is_visible(timeout=2000):
                                 search_input.fill(search_params['keywords'])
-                                page.keyboard.press('Enter')
-                                page.wait_for_timeout(3000)
                                 break
                         except:
                             continue
+                
+                # Try to fill in location search
+                if search_params.get('location'):
+                    location_selectors = [
+                        'input[placeholder*="location" i]',
+                        'input[placeholder*="city" i]',
+                        'input[placeholder*="where" i]',
+                        'input[name*="location" i]',
+                        'input[id*="location" i]',
+                        'input[aria-label*="location" i]',
+                        '#locationInput',
+                    ]
+                    for selector in location_selectors:
+                        try:
+                            location_input = page.locator(selector).first
+                            if location_input.is_visible(timeout=2000):
+                                location_input.fill(search_params['location'])
+                                break
+                        except:
+                            continue
+                
+                # Submit search (press Enter or click search button)
+                try:
+                    search_button = page.locator('button[type="submit"], button:has-text("Search"), button[aria-label*="search" i]').first
+                    if search_button.is_visible(timeout=1000):
+                        search_button.click()
+                    else:
+                        page.keyboard.press('Enter')
+                except:
+                    page.keyboard.press('Enter')
+                
+                page.wait_for_timeout(3000)
                 
                 # Find job links
                 job_links = []
@@ -505,10 +569,18 @@ def scrape_all_sites(sites: list[dict] = None, use_playwright: bool = True) -> G
         try:
             if site_type in js_heavy_types and playwright_scraper:
                 for job in playwright_scraper.scrape_site(site):
-                    yield job
+                    # Filter by location (DC Metro Area or Remote)
+                    if is_location_match(job.location):
+                        yield job
+                    else:
+                        print(f"  Skipped (location): {job.title} - {job.location}")
             else:
                 for job in generic_scraper.scrape_site(site):
-                    yield job
+                    # Filter by location (DC Metro Area or Remote)
+                    if is_location_match(job.location):
+                        yield job
+                    else:
+                        print(f"  Skipped (location): {job.title} - {job.location}")
         except Exception as e:
             print(f"Error scraping {site['name']}: {e}")
             continue
