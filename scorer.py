@@ -6,7 +6,11 @@ Compares job descriptions against resume to generate match scores.
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from anthropic import Anthropic
+
+# Load environment variables from .env file
+load_dotenv()
 
 from config import LLM_CONFIG, RESUME_PATH, MIN_MATCH_SCORE
 from storage import Job, get_unscored_jobs, update_match_score

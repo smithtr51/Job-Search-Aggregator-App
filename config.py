@@ -14,33 +14,34 @@ TARGET_SITES = [
     },
     {
         "name": "Maximus",
-        "careers_url": "https://careers.maximus.com/search-jobs",
-        "search_params": {"keywords": "technology director"},
-        "type": "icims"
+        "careers_url": "https://maximus.avature.net/careers/SearchJobs",
+        "search_params": {"keywords": "technology"},
+        "type": "avature"
     },
     {
         "name": "Leidos",
-        "careers_url": "https://careers.leidos.com/search/jobs",
-        "search_params": {"keywords": "chief architect federal"},
-        "type": "custom"
+        "careers_url": "https://leidos.wd5.myworkdayjobs.com/External",
+        "search_params": {"keywords": "chief architect"},
+        "type": "workday"
     },
-    {
-        "name": "SAIC",
-        "careers_url": "https://jobs.saic.com/search-jobs",
-        "search_params": {"keywords": "enterprise architect"},
-        "type": "icims"
-    },
+    # SAIC - Cloudflare protected, requires manual access
+    # {
+    #     "name": "SAIC",
+    #     "careers_url": "https://jobs.saic.com/search-jobs",
+    #     "search_params": {"keywords": "enterprise architect"},
+    #     "type": "icims"
+    # },
     {
         "name": "Booz Allen Hamilton",
         "careers_url": "https://careers.boozallen.com/jobs/search",
         "search_params": {"keywords": "chief technology officer"},
-        "type": "custom"
+        "type": "workday"  # Uses Playwright for JS rendering
     },
     {
         "name": "General Dynamics IT",
-        "careers_url": "https://www.gdit.com/careers/job-search/",
+        "careers_url": "https://gdit.wd5.myworkdayjobs.com/en-US/External_Career_Site",
         "search_params": {"keywords": "enterprise architect"},
-        "type": "custom"
+        "type": "workday"
     },
 ]
 

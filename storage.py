@@ -27,6 +27,8 @@ class Job:
     match_reasoning: Optional[str] = None
     status: str = "new"  # new, reviewed, applied, rejected, interviewing
     notes: str = ""
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
     
     def to_dict(self):
         return asdict(self)
