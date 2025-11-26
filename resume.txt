@@ -1,0 +1,40 @@
+# Replace this with your actual resume content
+
+PROFESSIONAL SUMMARY
+Enterprise Architect with 20+ years of federal technology leadership experience, including Director-level roles at IRS, CTO at DISA, and Senior Technical Advisor at FEMA. Expertise in cloud architecture (AWS, Azure, OCI), enterprise modernization, and federal compliance frameworks.
+
+CURRENT ROLE
+Chief Enterprise Architect, SHR Consulting (2024-Present)
+- Implementing AWS and Oracle Cloud Infrastructure multi-cloud landing zones for US Army Corps of Engineers
+- Designing HashiCorp Boundary integration for secure remote access
+- Developing CONOPS documentation and comprehensive test plans
+
+RECENT EXPERIENCE
+Director of Enterprise Architecture, IRS (April 2020 - Present)
+- Led enterprise architecture governance for $2.5B+ IT portfolio
+- Processed 266.6 million tax returns with 95% accuracy
+- Implemented AWS Databricks and Informatica ETL platforms
+- Managed Treasury Cloud WC2-H infrastructure
+
+Chief Technology Officer, DISA JSP (May 2017 - December 2019)
+- Managed teams of 150+ professionals with $100M+ budgets
+- Created Pentagon's first secure cloud access point
+- Led legacy system migration to modern cloud architecture
+
+SECURITY CLEARANCE
+Active TS/SCI
+
+CERTIFICATIONS
+- MIT Applied Generative AI for Digital Transformation
+- CompTIA Security+
+- ITIL Foundation
+
+EDUCATION
+M.S. Information Systems Management, University of Maryland Baltimore County
+
+TECHNICAL SKILLS
+- Cloud Platforms: AWS, Azure, Oracle Cloud Infrastructure
+- Architecture: TOGAF, Domain-Driven Design, Microservices
+- Compliance: FISMA, FedRAMP, CMMC, NIST 800-53
+- Tools: Terraform, HashiCorp Vault, Alfabet by Software AG
+- AI/ML: Databricks, fraud detection systems
