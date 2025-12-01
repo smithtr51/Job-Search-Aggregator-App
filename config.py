@@ -29,6 +29,7 @@ LOCATION_SEARCH = "Washington DC"
 # Target career pages - federal contractors and companies of interest
 # Format: (company_name, careers_url, search_keywords)
 TARGET_SITES = [
+    # ============ EXISTING FEDERAL CONTRACTORS ============
     {
         "name": "BAE Systems",
         "careers_url": "https://jobs.baesystems.com/global/en/search-results",
@@ -44,26 +45,143 @@ TARGET_SITES = [
     {
         "name": "Leidos",
         "careers_url": "https://leidos.wd5.myworkdayjobs.com/External",
-        "search_params": {"keywords": "chief architect", "location": "Washington DC"},
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
         "type": "workday"
     },
-    # SAIC - Cloudflare protected, requires manual access
-    # {
-    #     "name": "SAIC",
-    #     "careers_url": "https://jobs.saic.com/search-jobs",
-    #     "search_params": {"keywords": "enterprise architect", "location": "Washington DC"},
-    #     "type": "icims"
-    # },
     {
         "name": "Booz Allen Hamilton",
         "careers_url": "https://careers.boozallen.com/jobs/search",
-        "search_params": {"keywords": "chief technology officer", "location": "Washington DC"},
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
         "type": "workday"
     },
     {
         "name": "General Dynamics IT",
         "careers_url": "https://gdit.wd5.myworkdayjobs.com/en-US/External_Career_Site",
-        "search_params": {"keywords": "enterprise architect", "location": "Washington DC"},
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    
+    # ============ NEW FEDERAL CONTRACTORS ============
+    {
+        "name": "Northrop Grumman",
+        "careers_url": "https://www.northropgrumman.com/jobs",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Raytheon Technologies",
+        "careers_url": "https://careers.rtx.com/global/en/search-results",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Lockheed Martin",
+        "careers_url": "https://www.lockheedmartinjobs.com/search-jobs",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Accenture Federal Services",
+        "careers_url": "https://accenture.wd3.myworkdayjobs.com/AccentureFederalServicesCareers",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Deloitte",
+        "careers_url": "https://apply.deloitte.com/careers/SearchJobs",
+        "search_params": {"keywords": "architect federal", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "ManTech",
+        "careers_url": "https://mantech.wd1.myworkdayjobs.com/External",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "CACI International",
+        "careers_url": "https://caci.wd1.myworkdayjobs.com/External",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Peraton",
+        "careers_url": "https://careers.peraton.com/",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "CGI Federal",
+        "careers_url": "https://cgi.njoyn.com/corp/xweb/xweb.asp?page=joblisting",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "custom"
+    },
+    {
+        "name": "ICF International",
+        "careers_url": "https://icf.wd5.myworkdayjobs.com/ICFExternal",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    
+    # ============ INDUSTRY / COMMERCIAL EMPLOYERS ============
+    {
+        "name": "Amazon Web Services",
+        "careers_url": "https://www.amazon.jobs/en/search",
+        "search_params": {"keywords": "solutions architect", "location": "Washington DC"},
+        "type": "custom"
+    },
+    {
+        "name": "Microsoft",
+        "careers_url": "https://careers.microsoft.com/us/en/search-results",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Google",
+        "careers_url": "https://www.google.com/about/careers/applications/jobs/results",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "custom"
+    },
+    {
+        "name": "Oracle",
+        "careers_url": "https://www.oracle.com/careers/",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Salesforce",
+        "careers_url": "https://careers.salesforce.com/en/jobs/",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "IBM",
+        "careers_url": "https://www.ibm.com/careers/",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Cisco",
+        "careers_url": "https://jobs.cisco.com/jobs/SearchJobs",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Dell Technologies",
+        "careers_url": "https://dell.wd1.myworkdayjobs.com/en-US/External",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "VMware (Broadcom)",
+        "careers_url": "https://broadcom.wd1.myworkdayjobs.com/en-US/External",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
+        "type": "workday"
+    },
+    {
+        "name": "Palo Alto Networks",
+        "careers_url": "https://paloaltonetworks.wd1.myworkdayjobs.com/en-US/External",
+        "search_params": {"keywords": "architect", "location": "Washington DC"},
         "type": "workday"
     },
 ]
