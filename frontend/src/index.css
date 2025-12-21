@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-linkedin-background text-linkedin-text font-sans;
+  }
+}
+
+@layer components {
+  /* LinkedIn-style scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  /* Job card hover effect */
+  .job-card {
+    @apply bg-white border border-linkedin-border rounded-lg p-4 cursor-pointer transition-all duration-200;
+  }
+
+  .job-card:hover {
+    @apply shadow-md border-linkedin-blue;
+  }
+
+  .job-card.selected {
+    @apply border-linkedin-blue border-2;
+  }
+
+  /* Status badges */
+  .status-badge {
+    @apply px-3 py-1 rounded-full text-xs font-semibold uppercase;
+  }
+
+  .status-new {
+    @apply bg-blue-100 text-blue-700;
+  }
+
+  .status-reviewed {
+    @apply bg-purple-100 text-purple-700;
+  }
+
+  .status-applied {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .status-interviewing {
+    @apply bg-yellow-100 text-yellow-700;
+  }
+
+  .status-rejected {
+    @apply bg-red-100 text-red-700;
+  }
+
+  /* Score indicators */
+  .score-high {
+    @apply text-linkedin-success font-bold;
+  }
+
+  .score-medium {
+    @apply text-linkedin-warning font-bold;
+  }
+
+  .score-low {
+    @apply text-linkedin-text-secondary font-bold;
+  }
+}
+

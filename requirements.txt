@@ -7,10 +7,15 @@ python-dotenv>=1.0.0  # Load environment variables from .env
 # Google Search via ScraperAPI
 scraperapi-sdk>=0.2.0
 
-# Web UI
+# Web UI (Legacy Streamlit)
 streamlit>=1.30.0
 plotly>=5.18.0
 pandas>=2.0.0
+
+# FastAPI Backend
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
 
 # Optional - for advanced scraping
 # playwright>=1.40.0  # No longer needed for primary scraping
