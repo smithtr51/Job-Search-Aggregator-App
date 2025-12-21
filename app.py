@@ -19,7 +19,7 @@ from storage import (
     init_db, get_jobs, get_job_by_id, get_stats, 
     update_job_status, get_unscored_jobs
 )
-from config import TARGET_SITES, MIN_MATCH_SCORE
+from config import GOOGLE_SEARCH_CONFIG, MIN_MATCH_SCORE
 
 # Load API key from Streamlit secrets (if available) and set as environment variable
 # This allows the scorer.py to access it via os.environ
@@ -129,7 +129,7 @@ st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "Navigation",
-    ["📊 Dashboard", "📋 Jobs", "🔍 Job Details", "⚙️ Actions"],
+    ["📊 Dashboard", "📋 Jobs", "🔍 Job Details", "🔧 Search Config", "⚙️ Actions"],
     index=0
 )
 
@@ -421,6 +421,109 @@ elif page == "🔍 Job Details":
         st.info("No jobs in the database. Run a scrape to get started!")
 
 
+# ============== SEARCH CONFIG PAGE ==============
+elif page == "🔧 Search Config":
+    st.title("🔧 Google Search Configuration")
+    st.markdown("Configure parameters for internet-wide job search via Google")
+    
+    st.info("💡 These settings control how the scraper searches for jobs across the internet using Google Search via ScraperAPI")
+    
+    # Display current configuration
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("🔑 Keywords")
+        st.markdown("**Current keywords:**")
+        for keyword in GOOGLE_SEARCH_CONFIG['keywords']:
+            st.markdown(f"- `{keyword}`")
+        
+        st.markdown("---")
+        
+        st.subheader("🎯 Experience Levels")
+        st.markdown("**Current levels:**")
+        for level in GOOGLE_SEARCH_CONFIG.get('experience_levels', []):
+            st.markdown(f"- `{level}`")
+        
+        st.markdown("---")
+        
+        st.subheader("📅 Date Range")
+        date_range_display = {
+            'past_24h': 'Past 24 hours',
+            'past_week': 'Past week',
+            'past_month': 'Past month',
+            'any_time': 'Any time'
+        }
+        current_date_range = GOOGLE_SEARCH_CONFIG.get('date_range', 'past_week')
+        st.markdown(f"**Current:** `{date_range_display.get(current_date_range, current_date_range)}`")
+    
+    with col2:
+        st.subheader("🌐 Target Sites")
+        st.markdown("**Included job boards:**")
+        for site in GOOGLE_SEARCH_CONFIG.get('included_sites', []):
+            st.markdown(f"- `{site}`")
+        
+        st.markdown("---")
+        
+        st.subheader("📍 Locations")
+        st.markdown(f"**Primary location:** `{GOOGLE_SEARCH_CONFIG.get('primary_location', 'Not set')}`")
+        st.markdown(f"**Total target locations:** `{len(GOOGLE_SEARCH_CONFIG.get('locations', []))}`")
+        
+        with st.expander("View All Locations"):
+            for loc in GOOGLE_SEARCH_CONFIG.get('locations', []):
+                st.markdown(f"- {loc}")
+        
+        st.markdown("---")
+        
+        st.subheader("💰 Salary Range")
+        min_sal = GOOGLE_SEARCH_CONFIG.get('min_salary')
+        max_sal = GOOGLE_SEARCH_CONFIG.get('max_salary')
+        st.markdown(f"**Min:** `${min_sal:,}` | **Max:** `{'No limit' if not max_sal else f'${max_sal:,}'}`")
+        
+        st.markdown("---")
+        
+        st.subheader("📊 Results Limit")
+        st.markdown(f"**Max results per search:** `{GOOGLE_SEARCH_CONFIG.get('results_per_search', 100)}`")
+    
+    st.markdown("---")
+    
+    st.subheader("✏️ Modify Configuration")
+    st.markdown("""
+    To modify these settings, edit `config.py` and update the `GOOGLE_SEARCH_CONFIG` dictionary.
+    
+    **Example:**
+    ```python
+    GOOGLE_SEARCH_CONFIG = {
+        "keywords": ["enterprise architect", "CTO", "director technology"],
+        "date_range": "past_week",
+        "min_salary": 150000,
+        # ... other settings
+    }
+    ```
+    
+    After editing, restart the Streamlit app for changes to take effect.
+    """)
+    
+    # API Key status
+    st.markdown("---")
+    st.subheader("🔐 API Key Status")
+    
+    scraperapi_key = os.environ.get('SCRAPERAPI_KEY')
+    if scraperapi_key and scraperapi_key != 'your_key_here':
+        st.success("✅ SCRAPERAPI_KEY is configured")
+    else:
+        st.error("❌ SCRAPERAPI_KEY not found or invalid")
+        st.markdown("""
+        **To set up ScraperAPI:**
+        1. Sign up at [scraperapi.com](https://www.scraperapi.com/)
+        2. Get your API key from the dashboard
+        3. Add to your shell profile (`~/.zshrc`):
+           ```bash
+           export SCRAPERAPI_KEY="your_key_here"
+           ```
+        4. Restart your terminal and Streamlit app
+        """)
+
+
 # ============== ACTIONS PAGE ==============
 elif page == "⚙️ Actions":
     st.title("⚙️ Actions")
@@ -429,14 +532,27 @@ elif page == "⚙️ Actions":
     
     with col1:
         st.subheader("🔄 Scrape Jobs")
-        st.markdown("Fetch new job postings from configured career sites.")
+        st.markdown("Search for jobs across the internet using Google Search via ScraperAPI.")
         
-        # Show configured sites
-        with st.expander("Configured Sites"):
-            for site in TARGET_SITES:
-                st.markdown(f"- **{site['name']}** ({site.get('type', 'custom')})")
+        # Show search configuration summary
+        with st.expander("Search Configuration"):
+            st.markdown(f"**Keywords:** {len(GOOGLE_SEARCH_CONFIG['keywords'])} configured")
+            st.markdown(f"**Target locations:** {GOOGLE_SEARCH_CONFIG.get('primary_location', 'Not set')}")
+            st.markdown(f"**Date range:** {GOOGLE_SEARCH_CONFIG.get('date_range', 'past_week')}")
+            st.markdown(f"**Job boards:** {len(GOOGLE_SEARCH_CONFIG.get('included_sites', []))} sites")
+            st.markdown(f"**Salary min:** ${GOOGLE_SEARCH_CONFIG.get('min_salary', 0):,}")
+            st.markdown("\n*View full config in 🔧 Search Config page*")
         
-        if st.button("🚀 Start Scraping", type="primary", key="scrape"):
+        # Check API key
+        scraperapi_key = os.environ.get('SCRAPERAPI_KEY')
+        if not scraperapi_key or scraperapi_key == 'your_key_here':
+            st.error("❌ SCRAPERAPI_KEY not configured. See 🔧 Search Config page.")
+            scrape_disabled = True
+        else:
+            st.success("✅ ScraperAPI key configured")
+            scrape_disabled = False
+        
+        if st.button("🚀 Start Scraping", type="primary", key="scrape", disabled=scrape_disabled):
             with st.spinner("Scraping job sites... This may take a few minutes."):
                 # Use the virtual environment's Python
                 venv_python = os.path.join(os.path.dirname(__file__), 'venv', 'bin', 'python')

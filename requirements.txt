@@ -4,8 +4,8 @@ beautifulsoup4>=4.12.0
 lxml>=5.0.0  # Faster HTML parser
 python-dotenv>=1.0.0  # Load environment variables from .env
 
-# For JavaScript-heavy sites (Workday, iCIMS, Greenhouse)
-playwright>=1.40.0
+# Google Search via ScraperAPI
+scraperapi-sdk>=0.2.0
 
 # Web UI
 streamlit>=1.30.0
@@ -13,5 +13,6 @@ plotly>=5.18.0
 pandas>=2.0.0
 
 # Optional - for advanced scraping
+# playwright>=1.40.0  # No longer needed for primary scraping
 # selenium>=4.15.0
 # webdriver-manager>=4.0.0

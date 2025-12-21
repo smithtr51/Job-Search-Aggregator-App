@@ -14,18 +14,17 @@ Usage:
 
 import argparse
 import sys
-from datetime import datetime
 
 from storage import (
     init_db, save_job, get_jobs, get_job_by_id, 
-    get_stats, update_job_status
+    get_stats, update_job_status, update_match_score
 )
-from scraper import scrape_all_sites
+from scraper import GoogleJobScraper
 from scorer import (
     score_all_unscored_jobs, load_resume, score_job,
     generate_cover_letter_points, identify_resume_gaps
 )
-from config import MIN_MATCH_SCORE, TARGET_SITES
+from config import MIN_MATCH_SCORE
 
 
 def cmd_init(args):
@@ -39,17 +38,25 @@ def cmd_init(args):
 
 
 def cmd_scrape(args):
-    """Scrape all configured career sites."""
-    print(f"Scraping {len(TARGET_SITES)} configured sites...")
-    print("=" * 50)
+    """Scrape jobs using Google search via ScraperAPI."""
+    try:
+        scraper = GoogleJobScraper()
+    except (ValueError, ImportError) as e:
+        print(f"Error: {e}")
+        print("\nTo use Google search scraping:")
+        print("1. Install scraperapi-sdk: pip install scraperapi-sdk")
+        print("2. Set SCRAPERAPI_KEY environment variable")
+        print("   Add to ~/.zshrc: export SCRAPERAPI_KEY='your_key_here'")
+        sys.exit(1)
+    
+    print("Searching for jobs via Google...")
     
     count = 0
-    for job in scrape_all_sites():
+    for job in scraper.search_all():
         job_id = save_job(job)
         count += 1
-        print(f"  Saved: {job.title} at {job.company}")
     
-    print("=" * 50)
+    print("=" * 60)
     print(f"Scraped {count} jobs total.")
     print("\nRun 'python main.py score' to score these jobs against your resume.")
 
