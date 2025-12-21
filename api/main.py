@@ -11,6 +11,10 @@ import os
 from typing import Optional
 import io
 import csv
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -25,6 +29,7 @@ from api.models import (
     StatsResponse, TaskResponse, ConfigResponse
 )
 from api.background import run_scraper_task, run_scorer_task
+from api.progress import get_task, get_all_tasks
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -154,8 +159,7 @@ async def trigger_scrape(background_tasks: BackgroundTasks):
     task_id = f"scrape_{os.urandom(8).hex()}"
     
     async def scrape_and_notify():
-        result = await run_scraper_task()
-        # In a production app, you'd store this result and provide a status endpoint
+        result = await run_scraper_task(task_id)
         print(f"Scraping task {task_id} completed: {result}")
     
     background_tasks.add_task(scrape_and_notify)
@@ -185,7 +189,7 @@ async def trigger_scoring(background_tasks: BackgroundTasks):
     task_id = f"score_{os.urandom(8).hex()}"
     
     async def score_and_notify():
-        result = await run_scorer_task()
+        result = await run_scorer_task(task_id)
         print(f"Scoring task {task_id} completed: {result}")
     
     background_tasks.add_task(score_and_notify)
@@ -195,6 +199,25 @@ async def trigger_scoring(background_tasks: BackgroundTasks):
         status="started",
         message=f"Scoring started for {len(unscored)} jobs"
     )
+
+
+@app.get("/api/tasks/{task_id}")
+async def get_task_status(task_id: str):
+    """
+    Get the status and progress of a background task.
+    """
+    task = get_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    return task
+
+
+@app.get("/api/tasks")
+async def list_tasks():
+    """
+    List all background tasks and their status.
+    """
+    return {"tasks": get_all_tasks()}
 
 
 @app.get("/api/config", response_model=ConfigResponse)

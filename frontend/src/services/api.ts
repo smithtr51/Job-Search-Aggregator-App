@@ -66,6 +66,11 @@ export const actionsApi = {
     const { data } = await api.post('/api/score');
     return data;
   },
+
+  getTaskStatus: async (taskId: string): Promise<any> => {
+    const { data } = await api.get(`/api/tasks/${taskId}`);
+    return data;
+  },
 };
 
 export default api;

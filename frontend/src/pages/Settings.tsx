@@ -2,19 +2,38 @@ import { useState } from 'react';
 import { Download, Play, CheckCircle, AlertCircle } from 'lucide-react';
 import { useConfig, useScrapeJobs, useScoreJobs } from '../hooks/useJobs';
 import { jobsApi } from '../services/api';
+import ProgressTracker from '../components/ProgressTracker';
 
 export default function Settings() {
   const { data: config } = useConfig();
   const scrapeJobs = useScrapeJobs();
   const scoreJobs = useScoreJobs();
   const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [scrapeTaskId, setScrapeTaskId] = useState<string | null>(null);
+  const [scoreTaskId, setScoreTaskId] = useState<string | null>(null);
 
   const handleScrape = () => {
-    scrapeJobs.mutate();
+    scrapeJobs.mutate(undefined, {
+      onSuccess: (data) => {
+        setScrapeTaskId(data.task_id);
+      },
+    });
   };
 
   const handleScore = () => {
-    scoreJobs.mutate();
+    scoreJobs.mutate(undefined, {
+      onSuccess: (data) => {
+        setScoreTaskId(data.task_id);
+      },
+    });
+  };
+
+  const handleScrapeComplete = () => {
+    setScrapeTaskId(null);
+  };
+
+  const handleScoreComplete = () => {
+    setScoreTaskId(null);
   };
 
   const handleExport = async () => {
@@ -57,23 +76,20 @@ export default function Settings() {
             </p>
             <button
               onClick={handleScrape}
-              disabled={scrapeJobs.isPending}
+              disabled={scrapeJobs.isPending || !!scrapeTaskId}
               className="w-full flex items-center justify-center px-4 py-2 bg-linkedin-blue text-white rounded-lg hover:bg-linkedin-dark-blue disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <Play className="w-4 h-4 mr-2" />
-              {scrapeJobs.isPending ? 'Scraping...' : 'Start Scraping'}
+              {scrapeTaskId ? 'Scraping...' : 'Start Scraping'}
             </button>
-            {scrapeJobs.isSuccess && (
-              <div className="mt-2 flex items-center text-sm text-green-600">
-                <CheckCircle className="w-4 h-4 mr-1" />
-                Scraping started
-              </div>
-            )}
             {scrapeJobs.isError && (
               <div className="mt-2 flex items-center text-sm text-red-600">
                 <AlertCircle className="w-4 h-4 mr-1" />
                 Failed to start scraping
               </div>
+            )}
+            {scrapeTaskId && (
+              <ProgressTracker taskId={scrapeTaskId} onComplete={handleScrapeComplete} />
             )}
           </div>
 
@@ -85,23 +101,20 @@ export default function Settings() {
             </p>
             <button
               onClick={handleScore}
-              disabled={scoreJobs.isPending}
+              disabled={scoreJobs.isPending || !!scoreTaskId}
               className="w-full flex items-center justify-center px-4 py-2 bg-linkedin-success text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <Play className="w-4 h-4 mr-2" />
-              {scoreJobs.isPending ? 'Scoring...' : 'Start Scoring'}
+              {scoreTaskId ? 'Scoring...' : 'Start Scoring'}
             </button>
-            {scoreJobs.isSuccess && (
-              <div className="mt-2 flex items-center text-sm text-green-600">
-                <CheckCircle className="w-4 h-4 mr-1" />
-                Scoring started
-              </div>
-            )}
             {scoreJobs.isError && (
               <div className="mt-2 flex items-center text-sm text-red-600">
                 <AlertCircle className="w-4 h-4 mr-1" />
                 Failed to start scoring
               </div>
+            )}
+            {scoreTaskId && (
+              <ProgressTracker taskId={scoreTaskId} onComplete={handleScoreComplete} />
             )}
           </div>
 
